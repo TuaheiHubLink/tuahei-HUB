@@ -5,15 +5,15 @@ local Mouse = Player:GetMouse()
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = Player:WaitForChild("PlayerGui")
 
--- Background Frame
+-- Background Frame (Make it sleek and modern)
 local BackgroundFrame = Instance.new("Frame")
 BackgroundFrame.Parent = ScreenGui
-BackgroundFrame.Size = UDim2.new(0, 300, 0, 400)
-BackgroundFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+BackgroundFrame.Size = UDim2.new(0, 400, 0, 500)
+BackgroundFrame.Position = UDim2.new(0.5, -200, 0.5, -250)
 BackgroundFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-BackgroundFrame.BackgroundTransparency = 0.8
+BackgroundFrame.BackgroundTransparency = 0.85
 BackgroundFrame.BorderSizePixel = 2
-BackgroundFrame.BorderColor3 = Color3.fromRGB(0, 170, 255)
+BackgroundFrame.BorderColor3 = Color3.fromRGB(50, 50, 255)  -- Soft blue border
 
 -- Draggable GUI functionality
 local dragToggle = nil
@@ -42,50 +42,31 @@ BackgroundFrame.InputEnded:Connect(function(input)
     end
 end)
 
--- Rainbow Gradient Label (Tuahei Hub)
+-- Modern Text Label (Centered, simple, and sleek)
 local TextLabel = Instance.new("TextLabel")
 TextLabel.Parent = BackgroundFrame
-TextLabel.Size = UDim2.new(0, 280, 0, 50)
-TextLabel.Position = UDim2.new(0.5, -140, 0, 10)
+TextLabel.Size = UDim2.new(0, 380, 0, 60)
+TextLabel.Position = UDim2.new(0.5, -190, 0, 10)
 TextLabel.Text = "Tuahei Hub | Blue Lock Rival"
-TextLabel.TextSize = 30
-TextLabel.TextStrokeTransparency = 0.8
+TextLabel.TextSize = 32
 TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel.BackgroundTransparency = 1
-TextLabel.TextStrokeTransparency = 0.5
+TextLabel.TextStrokeTransparency = 0.6
 TextLabel.TextXAlignment = Enum.TextXAlignment.Center
+TextLabel.Font = Enum.Font.GothamBold
 
--- Rainbow effect for label
-local function setRainbow()
-    local rainbowColors = {Color3.fromRGB(255, 0, 0), Color3.fromRGB(255, 165, 0), Color3.fromRGB(255, 255, 0), 
-                           Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 0, 255), Color3.fromRGB(75, 0, 130), 
-                           Color3.fromRGB(238, 130, 238)}
-
-    local i = 1
-    while true do
-        TextLabel.TextColor3 = rainbowColors[i]
-        i = i + 1
-        if i > #rainbowColors then
-            i = 1
-        end
-        wait(0.1)
-    end
-end
-
--- Run the rainbow effect in a separate thread
-coroutine.wrap(setRainbow)()
-
--- Create NoClip Toggle Button
+-- NoClip Button
 local NoClipButton = Instance.new("TextButton")
 NoClipButton.Parent = BackgroundFrame
-NoClipButton.Size = UDim2.new(0, 250, 0, 40)
-NoClipButton.Position = UDim2.new(0.5, -125, 0, 70)
+NoClipButton.Size = UDim2.new(0, 350, 0, 50)
+NoClipButton.Position = UDim2.new(0.5, -175, 0, 80)
 NoClipButton.Text = "NoClip: OFF"
-NoClipButton.TextSize = 24
+NoClipButton.TextSize = 26
 NoClipButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-NoClipButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-NoClipButton.TextStrokeTransparency = 0.5
-NoClipButton.BackgroundTransparency = 0.5
+NoClipButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+NoClipButton.TextStrokeTransparency = 0.7
+NoClipButton.BackgroundTransparency = 0.6
+NoClipButton.Font = Enum.Font.Gotham
 
 local noClipEnabled = false
 NoClipButton.MouseButton1Click:Connect(function()
@@ -94,120 +75,138 @@ NoClipButton.MouseButton1Click:Connect(function()
         NoClipButton.Text = "NoClip: ON"
         NoClipButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
         -- Enable NoClip here
-        -- For example: Player.Character.HumanoidRootPart.CanCollide = false
-    else
-        NoClipButton.Text = "NoClip: OFF"
-        NoClipButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-        -- Disable NoClip here
-        -- For example: Player.Character.HumanoidRootPart.CanCollide = true
-    end
-end)
-
--- Create Player Warp Button
-local WarpButton = Instance.new("TextButton")
-WarpButton.Parent = BackgroundFrame
-WarpButton.Size = UDim2.new(0, 250, 0, 40)
-WarpButton.Position = UDim2.new(0.5, -125, 0, 120)
-WarpButton.Text = "Warp to Players"
-WarpButton.TextSize = 24
-WarpButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-WarpButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-WarpButton.TextStrokeTransparency = 0.5
-WarpButton.BackgroundTransparency = 0.5
-
-local warpActive = false
-local warpConnection
-WarpButton.MouseButton1Click:Connect(function()
-    warpActive = not warpActive
-    if warpActive then
-        WarpButton.Text = "Warping Active"
-        WarpButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-
-        warpConnection = game:GetService("RunService").Heartbeat:Connect(function()
-            local closestPlayer = nil
-            local shortestDistance = math.huge
-
-            -- Find the closest player
-            for _, otherPlayer in pairs(game.Players:GetPlayers()) do
-                if otherPlayer ~= Player then
-                    local character = otherPlayer.Character
-                    if character then
-                        local torso = character:FindFirstChild("HumanoidRootPart")
-                        if torso then
-                            local distance = (Player.Character.HumanoidRootPart.Position - torso.Position).Magnitude
-                            if distance < shortestDistance then
-                                closestPlayer = torso
-                                shortestDistance = distance
-                            end
-                        end
-                    end
-                end
-            end
-
-            -- Warp to the closest player’s HumanoidRootPart (Torso)
-            if closestPlayer then
-                Player.Character:SetPrimaryPartCFrame(closestPlayer.CFrame + Vector3.new(0, 3, 5)) -- Warp 5 studs ahead
+        local character = Player.Character or Player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.PlatformStand = true
+        character:WaitForChild("HumanoidRootPart").AncestryChanged:Connect(function()
+            if not noClipEnabled then
+                humanoid.PlatformStand = false
             end
         end)
     else
-        WarpButton.Text = "Warp to Players"
-        WarpButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-        if warpConnection then
-            warpConnection:Disconnect()
+        NoClipButton.Text = "NoClip: OFF"
+        NoClipButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+        -- Disable NoClip here
+        local character = Player.Character or Player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.PlatformStand = false
+    end
+end)
+
+-- Teleport Button
+local WarpButton = Instance.new("TextButton")
+WarpButton.Parent = BackgroundFrame
+WarpButton.Size = UDim2.new(0, 350, 0, 50)
+WarpButton.Position = UDim2.new(0.5, -175, 0, 160)
+WarpButton.Text = "Teleport to Players"
+WarpButton.TextSize = 26
+WarpButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+WarpButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+WarpButton.TextStrokeTransparency = 0.7
+WarpButton.BackgroundTransparency = 0.6
+WarpButton.Font = Enum.Font.Gotham
+
+WarpButton.MouseButton1Click:Connect(function()
+    local players = game.Players:GetPlayers()
+    for _, otherPlayer in pairs(players) do
+        if otherPlayer ~= Player then
+            -- Teleport to the first available player
+            local character = otherPlayer.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                Player.Character:SetPrimaryPartCFrame(character.HumanoidRootPart.CFrame)
+                break
+            end
         end
     end
 end)
 
--- Create Close Button (X) at the top right
-local CloseButton = Instance.new("TextButton")
-CloseButton.Parent = BackgroundFrame
-CloseButton.Size = UDim2.new(0, 40, 0, 40)
-CloseButton.Position = UDim2.new(1, -50, 0, 10)
-CloseButton.Text = "X"
-CloseButton.TextSize = 24
-CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-CloseButton.TextStrokeTransparency = 0.5
-CloseButton.BackgroundTransparency = 0.5
+-- Auto Dribble Button (Press Q to start automatic dribbling)
+local AutoDribbleButton = Instance.new("TextButton")
+AutoDribbleButton.Parent = BackgroundFrame
+AutoDribbleButton.Size = UDim2.new(0, 350, 0, 50)
+AutoDribbleButton.Position = UDim2.new(0.5, -175, 0, 240)
+AutoDribbleButton.Text = "Auto Dribble: OFF"
+AutoDribbleButton.TextSize = 26
+AutoDribbleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoDribbleButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+AutoDribbleButton.TextStrokeTransparency = 0.7
+AutoDribbleButton.BackgroundTransparency = 0.6
+AutoDribbleButton.Font = Enum.Font.Gotham
 
-CloseButton.MouseButton1Click:Connect(function()
-    -- Show confirmation prompt to exit
-    local confirmationPrompt = Instance.new("TextLabel")
-    confirmationPrompt.Parent = ScreenGui
-    confirmationPrompt.Size = UDim2.new(0, 200, 0, 50)
-    confirmationPrompt.Position = UDim2.new(0.5, -100, 0.5, -50)
-    confirmationPrompt.Text = "Are you sure you want to exit Tuahei Script?"
-    confirmationPrompt.TextSize = 18
-    confirmationPrompt.TextColor3 = Color3.fromRGB(255, 255, 255)
-    confirmationPrompt.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    confirmationPrompt.TextStrokeTransparency = 0.5
-    confirmationPrompt.TextXAlignment = Enum.TextXAlignment.Center
+local autoDribbleActive = false
+AutoDribbleButton.MouseButton1Click:Connect(function()
+    autoDribbleActive = not autoDribbleActive
+    if autoDribbleActive then
+        AutoDribbleButton.Text = "Auto Dribble: ON"
+        AutoDribbleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+        -- Start automatic dribbling here (press Q to simulate dribbling)
+        while autoDribbleActive do
+            local character = Player.Character
+            if character then
+                local humanoid = character:FindFirstChild("Humanoid")
+                if humanoid and humanoid.Health > 0 then
+                    game:GetService("ReplicatedStorage"):WaitForChild("DribbleEvent"):FireServer()
+                    wait(0.1) -- Press Q every 0.1 seconds
+                end
+            end
+            wait(0.1)
+        end
+    else
+        AutoDribbleButton.Text = "Auto Dribble: OFF"
+        AutoDribbleButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    end
+end)
 
-    local confirmButton = Instance.new("TextButton")
-    confirmButton.Parent = ScreenGui
-    confirmButton.Size = UDim2.new(0, 80, 0, 40)
-    confirmButton.Position = UDim2.new(0.5, -100, 0.5, 10)
-    confirmButton.Text = "Confirm"
-    confirmButton.TextSize = 20
-    confirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    confirmButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+-- Auto Slide Button (Press E to start automatic sliding)
+local AutoSlideButton = Instance.new("TextButton")
+AutoSlideButton.Parent = BackgroundFrame
+AutoSlideButton.Size = UDim2.new(0, 350, 0, 50)
+AutoSlideButton.Position = UDim2.new(0.5, -175, 0, 320)
+AutoSlideButton.Text = "Auto Slide: OFF"
+AutoSlideButton.TextSize = 26
+AutoSlideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoSlideButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+AutoSlideButton.TextStrokeTransparency = 0.7
+AutoSlideButton.BackgroundTransparency = 0.6
+AutoSlideButton.Font = Enum.Font.Gotham
 
-    local cancelButton = Instance.new("TextButton")
-    cancelButton.Parent = ScreenGui
-    cancelButton.Size = UDim2.new(0, 80, 0, 40)
-    cancelButton.Position = UDim2.new(0.5, 20, 0.5, 10)
-    cancelButton.Text = "Cancel"
-    cancelButton.TextSize = 20
-    cancelButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    cancelButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+local autoSlideActive = false
+AutoSlideButton.MouseButton1Click:Connect(function()
+    autoSlideActive = not autoSlideActive
+    if autoSlideActive then
+        AutoSlideButton.Text = "Auto Slide: ON"
+        AutoSlideButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        -- Start automatic sliding here (press E to simulate sliding)
+        while autoSlideActive do
+            local character = Player.Character
+            if character then
+                local humanoid = character:FindFirstChild("Humanoid")
+                if humanoid and humanoid.Health > 0 then
+                    game:GetService("ReplicatedStorage"):WaitForChild("SlideEvent"):FireServer()
+                    wait(0.1) -- Press E every 0.1 seconds
+                end
+            end
+            wait(0.1)
+        end
+    else
+        AutoSlideButton.Text = "Auto Slide: OFF"
+        AutoSlideButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    end
+end)
 
-    confirmButton.MouseButton1Click:Connect(function()
-        ScreenGui:Destroy()
-    end)
+-- Add "X" Button for exiting the GUI
+local ExitButton = Instance.new("TextButton")
+ExitButton.Parent = BackgroundFrame
+ExitButton.Size = UDim2.new(0, 50, 0, 50)
+ExitButton.Position = UDim2.new(0.5, 170, 0, 10)
+ExitButton.Text = "X"
+ExitButton.TextSize = 26
+ExitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ExitButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+ExitButton.TextStrokeTransparency = 0.7
+ExitButton.BackgroundTransparency = 0.6
+ExitButton.Font = Enum.Font.Gotham
 
-    cancelButton.MouseButton1Click:Connect(function()
-        confirmationPrompt:Destroy()
-        confirmButton:Destroy()
-        cancelButton:Destroy()
-    end)
+ExitButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy() -- Close the GUI when clicked
 end)
