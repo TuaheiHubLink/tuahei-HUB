@@ -97,13 +97,26 @@ game:GetService("RunService").Stepped:Connect(function()
                 part.CanCollide = false
             end
         end
+    else
+        -- เมื่อ NoClip ปิด การชนกลับมาเป็นปกติ
+        for _, part in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
     end
 end)
 
 NoClipButton.MouseButton1Click:Connect(function()
     noclip = not noclip
-    NoClipButton.BackgroundColor3 = noclip and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 120, 255)
-    NoClipButton.Text = noclip and "NoClip ON" or "NoClip"
+    -- เปลี่ยนสีปุ่มและข้อความเมื่อเปิด/ปิด NoClip
+    if noclip then
+        NoClipButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- สีแดงเมื่อเปิด
+        NoClipButton.Text = "NoClip ON"
+    else
+        NoClipButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)  -- สีฟ้าเมื่อปิด
+        NoClipButton.Text = "NoClip"
+    end
 end)
 
 --// TP to Nearest Player
