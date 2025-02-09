@@ -2,42 +2,25 @@
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
---// Main Frame (Draggable & Resizable)
+--// Main Frame (Draggable)
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 400, 0, 250)
-MainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
+MainFrame.Size = UDim2.new(0, 300, 0, 400)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
 MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.Parent = ScreenGui
 
---// Text Label (Animated Gradient)
+--// Text Label (Title)
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 40)
 Title.BackgroundTransparency = 1
-Title.Text = "tuahei Hub | Blue Lock"
+Title.Text = "tuahei Hub | Free"
 Title.TextSize = 20
 Title.Font = Enum.Font.GothamBold
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Parent = MainFrame
-
--- Gradient Effect
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Parent = Title
-UIGradient.Rotation = 0
-UIGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 170, 255)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(170, 0, 255)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 170, 255))
-}
-
--- Animate Gradient
-spawn(function()
-    while wait(0.1) do
-        UIGradient.Rotation = UIGradient.Rotation + 5
-    end
-end)
 
 --// Close Button (with Confirmation)
 local CloseButton = Instance.new("TextButton")
@@ -75,45 +58,76 @@ CloseButton.MouseButton1Click:Connect(function()
     ConfirmFrame:Destroy()
 end)
 
---// Toggle Button for Hitbox Visibility
-local HitboxToggle = Instance.new("TextButton")
-HitboxToggle.Size = UDim2.new(0.8, 0, 0.15, 0)
-HitboxToggle.Position = UDim2.new(0.1, 0, 0.2, 0)
-HitboxToggle.Text = "Show Hitboxes"
-HitboxToggle.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-HitboxToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-HitboxToggle.Parent = MainFrame
+--// Speed Input
+local SpeedInput = Instance.new("TextBox")
+SpeedInput.Size = UDim2.new(0.8, 0, 0.08, 0)
+SpeedInput.Position = UDim2.new(0.1, 0, 0.15, 0)
+SpeedInput.PlaceholderText = "Enter Speed"
+SpeedInput.TextColor3 = Color3.fromRGB(255, 50, 50)
+SpeedInput.Parent = MainFrame
 
-local hitboxEnabled = false
-HitboxToggle.MouseButton1Click:Connect(function()
-    hitboxEnabled = not hitboxEnabled
-    HitboxToggle.BackgroundColor3 = hitboxEnabled and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 120, 255)
-    HitboxToggle.Text = hitboxEnabled and "Hide Hitboxes" or "Show Hitboxes"
-    for _, player in pairs(game.Players:GetPlayers()) do
-        if player.Character and player.Character:FindFirstChild("Hitbox") then
-            player.Character.Hitbox.Transparency = hitboxEnabled and 0 or 1
+local SpeedButton = Instance.new("TextButton")
+SpeedButton.Size = UDim2.new(0.8, 0, 0.08, 0)
+SpeedButton.Position = UDim2.new(0.1, 0, 0.25, 0)
+SpeedButton.Text = "Set Speed"
+SpeedButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+SpeedButton.Parent = MainFrame
+
+SpeedButton.MouseButton1Click:Connect(function()
+    local speed = tonumber(SpeedInput.Text)
+    if speed and speed > 0 then
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
+    end
+end)
+
+--// NoClip Button
+local NoClipButton = Instance.new("TextButton")
+NoClipButton.Size = UDim2.new(0.8, 0, 0.08, 0)
+NoClipButton.Position = UDim2.new(0.1, 0, 0.35, 0)
+NoClipButton.Text = "NoClip"
+NoClipButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+NoClipButton.Parent = MainFrame
+
+local noclip = false
+game:GetService("RunService").Stepped:Connect(function()
+    if noclip then
+        for _, part in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
         end
     end
 end)
 
---// Input for Hitbox Size
-local HitboxSizeInput = Instance.new("TextBox")
-HitboxSizeInput.Size = UDim2.new(0.6, 0, 0.15, 0)
-HitboxSizeInput.Position = UDim2.new(0.1, 0, 0.4, 0)
-HitboxSizeInput.PlaceholderText = "Hitbox Size (0.1-500)"
-HitboxSizeInput.TextColor3 = Color3.fromRGB(255, 50, 50)
-HitboxSizeInput.Parent = MainFrame
+NoClipButton.MouseButton1Click:Connect(function()
+    noclip = not noclip
+    NoClipButton.BackgroundColor3 = noclip and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 120, 255)
+    NoClipButton.Text = noclip and "NoClip ON" or "NoClip"
+end)
 
-local HitboxSizeButton = Instance.new("TextButton")
-HitboxSizeButton.Size = UDim2.new(0.2, 0, 0.15, 0)
-HitboxSizeButton.Position = UDim2.new(0.75, 0, 0.4, 0)
-HitboxSizeButton.Text = "Set"
-HitboxSizeButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-HitboxSizeButton.Parent = MainFrame
+--// TP to Nearest Player
+local TPButton = Instance.new("TextButton")
+TPButton.Size = UDim2.new(0.8, 0, 0.08, 0)
+TPButton.Position = UDim2.new(0.1, 0, 0.45, 0)
+TPButton.Text = "TP to Nearest Player"
+TPButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+TPButton.Parent = MainFrame
 
-HitboxSizeButton.MouseButton1Click:Connect(function()
-    local size = tonumber(HitboxSizeInput.Text)
-    if size and size >= 0.1 and size <= 500 then
-        game.Players.LocalPlayer.Character.Hitbox.Size = Vector3.new(size, size, size)
+TPButton.MouseButton1Click:Connect(function()
+    local player = game.Players.LocalPlayer
+    local char = player.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        local nearestPlayer, minDistance = nil, math.huge
+        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+            if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (char.HumanoidRootPart.Position - otherPlayer.Character.HumanoidRootPart.Position).magnitude
+                if distance < minDistance then
+                    nearestPlayer, minDistance = otherPlayer, distance
+                end
+            end
+        end
+        if nearestPlayer then
+            char.HumanoidRootPart.CFrame = nearestPlayer.Character.HumanoidRootPart.CFrame
+        end
     end
 end)
