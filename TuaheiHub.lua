@@ -1,6 +1,7 @@
 --// Main GUI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+game:GetService("GuiService"):AddSelectionParent("PersistentGUI", ScreenGui)
 
 --// Main Frame (Draggable)
 local MainFrame = Instance.new("Frame")
