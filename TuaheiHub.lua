@@ -18,7 +18,7 @@ end
 
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Tuahri Hub", "BloodTheme")
+local Window = Library.CreateLib("Tuahei Hub", "BloodTheme")
 local Tab = Window:NewTab("Menu")
 local Section = Tab:NewSection("MAIN")
 
