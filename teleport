@@ -24,10 +24,3 @@ local function teleportBack(player)
         end
     end
 end
-
--- ตัวอย่างการใช้งาน (กดปุ่มเพื่อวาร์ป)
-local Players = game:GetService("Players")
-local localPlayer = Players.LocalPlayer
-
--- เรียก teleportPlayer(localPlayer) เพื่อวาร์ปไปตำแหน่งเป้าหมาย
--- เรียก teleportBack(localPlayer) เพื่อวาร์ปกลับตำแหน่งเดิม
