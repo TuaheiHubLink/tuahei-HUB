@@ -1,0 +1,33 @@
+local teleportPosition = Vector3.new(49.81, 131.00, -618.93)
+local playerLastPosition = {}  -- เก็บตำแหน่งเดิมของผู้เล่น
+
+local function teleportPlayer(player)
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = player.Character.HumanoidRootPart
+        
+        -- เก็บตำแหน่งเดิมของผู้เล่น
+        playerLastPosition[player] = humanoidRootPart.Position
+        
+        -- วาร์ปไปยังจุดหมายปลายทาง
+        humanoidRootPart.CFrame = CFrame.new(teleportPosition)
+    end
+end
+
+local function teleportBack(player)
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = player.Character.HumanoidRootPart
+        
+        -- วาร์ปกลับไปตำแหน่งเดิมถ้ามีข้อมูลเก็บไว้
+        if playerLastPosition[player] then
+            humanoidRootPart.CFrame = CFrame.new(playerLastPosition[player])
+            playerLastPosition[player] = nil -- ล้างข้อมูลหลังจากวาร์ปกลับแล้ว
+        end
+    end
+end
+
+-- ตัวอย่างการใช้งาน (กดปุ่มเพื่อวาร์ป)
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+-- เรียก teleportPlayer(localPlayer) เพื่อวาร์ปไปตำแหน่งเป้าหมาย
+-- เรียก teleportBack(localPlayer) เพื่อวาร์ปกลับตำแหน่งเดิม
