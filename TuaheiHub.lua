@@ -48,5 +48,5 @@ end)
 local Tab = Window:NewTab("Farm")
 local Section = Tab:NewSection("Farming")
 
-Section:NewButton("auto ...", "!!!", function()
+Section:NewButton("auto ", "!!!", function()
 end)
