@@ -37,7 +37,7 @@ Section:Toggle("Click Here", false, function(value)
         spawn(function()
             pcall(function()
                 while _G.AutoShake do
-                    task.wait(0.01)
+                    task.wait(0.00000000000000000000000000000000000000000001)
                     local PlayerGUI = LocalPlayer:FindFirstChild("PlayerGui")
                     local shakeUI = PlayerGUI and PlayerGUI:FindFirstChild("shakeui")
                     if shakeUI and shakeUI.Enabled then
