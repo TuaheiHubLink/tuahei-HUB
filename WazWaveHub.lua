@@ -79,8 +79,23 @@ Section:Toggle("Click Here", false, function(value)
     end
 end)
 
-local Section = Tab:Section("Toggle UI")
-Section:Button("❌ Hide/Show", function()
+local Section = Tab:Section("Walk on Water")
+Section:Toggle("Click Here", false, function(value)
+    _G.WalkOnWater = value
+    if _G.WalkOnWater then
+        spawn(function()
+            while _G.WalkOnWater do
+                task.wait()
+                if Char and Char:FindFirstChild("HumanoidRootPart") then
+                    local hrp = Char.HumanoidRootPart
+                    if hrp.Position.Y < workspace.FallenPartsDestroyHeight + 10 then -- ตรวจสอบว่าผู้เล่นอยู่ต่ำกว่าพื้นที่กำหนด
+                        hrp.Position = hrp.Position + Vector3.new(0, 5, 0) -- ยกตัวผู้เล่นขึ้น
+                    end
+                end
+            end
+        end)
+    end
+end)
     isVisible = not isVisible
     MainUI.Visible = isVisible
 end)
